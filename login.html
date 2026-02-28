@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Manga Hub{% endblock %}
+
+{% block content %}
+  <h1 class="glow">Login</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <form method="post" class="mt-4">
+    <div class="mb-3">
+      <label for="username" class="form-label">Usuário</label>
+      <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Senha</label>
+      <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Entrar</button>
+    <a href="{{ url_for('register') }}" class="btn btn-link">Criar conta</a>
+  </form>
+{% endblock %}

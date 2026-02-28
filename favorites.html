@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Meus Favoritos - Manga Hub{% endblock %}
+
+{% block content %}
+  <h1 class="glow">Meus Favoritos</h1>
+  {% if mangas %}
+    <div class="row gy-4">
+      {% for manga in mangas %}
+        <div class="col-md-4 fade-in">
+          <div class="card card-manga h-100">
+            {% if manga.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + manga.image_filename) }}" class="card-img-top" alt="Capa de {{ manga.title }}">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ manga.title }}</h5>
+              <p class="card-text">{{ manga.description[:100] or 'Sem descrição.' }}{% if manga.description and manga.description|length > 100 %}...{% endif %}</p>
+            </div>
+            <div class="card-footer text-muted small">
+              Autor: {{ manga.author or 'Desconhecido' }}<br>
+              {{ manga.posted_at.strftime('%d/%m/%Y %H:%M') }}
+            </div>
+            <a href="{{ url_for('manga_detail', manga_id=manga.id) }}" class="stretched-link"></a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="lead">Você ainda não adicionou nenhum mangá aos favoritos.</p>
+  {% endif %}
+{% endblock %}

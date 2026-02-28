@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Página Inicial - Manga Hub{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4 glow">Mangás Postados</h1>
+  {% if mangas %}
+    <div class="row gy-4">
+      {% for manga in mangas %}
+        <div class="col-md-4 fade-in">
+          <div class="card card-manga h-100 position-relative">
+            {% if manga._imgs %}
+            <img src="{{ url_for('static', filename='uploads/' + manga._imgs[0]) }}" class="card-img-top" alt="Capa de {{ manga.title }}">
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <form method="post" action="{{ url_for('toggle_favorite', manga_id=manga.id) }}" class="position-absolute top-0 end-0 m-2">
+              {% if current_user.is_favorite(manga) %}
+              <button type="submit" class="btn btn-sm btn-outline-warning">&#9733;</button>
+              {% else %}
+              <button type="submit" class="btn btn-sm btn-warning">&#9734;</button>
+              {% endif %}
+            </form>
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ manga.title }}</h5>
+              <p class="card-text">{{ manga.description[:100] or 'Sem descrição.' }}{% if manga.description and manga.description|length > 100 %}...{% endif %}</p>
+            </div>
+            <div class="card-footer text-muted small">
+              Autor: {{ manga.author or 'Desconhecido' }}<br>
+              {{ manga.posted_at.strftime('%d/%m/%Y %H:%M') }}
+            </div>
+            <a href="{{ url_for('manga_detail', manga_id=manga.id) }}" class="stretched-link"></a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="lead">Nenhum mangá foi postado ainda. {% if current_user.is_authenticated and current_user.is_admin %}
+      <a href="{{ url_for('add_manga') }}">Seja o primeiro a postar!</a>
+    {% else %}
+      Entre como administrador para postar.</a>
+    {% endif %}</p>
+  {% endif %}
+{% endblock %}

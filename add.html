@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Postar Novo Mangá - Manga Hub{% endblock %}
+
+{% block content %}
+  <h1 class="glow">Postar Novo Mangá</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <form method="post" enctype="multipart/form-data" class="mt-4">
+    <div class="mb-3">
+      <label for="title" class="form-label">Título</label>
+      <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+      <label for="author" class="form-label">Autor</label>
+      <input type="text" class="form-control" id="author" name="author">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Descrição</label>
+      <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="images" class="form-label">Imagens (JPG/PNG/GIF, máx. 320) – ordem conforme seleção</label>
+      <input class="form-control" type="file" id="images" name="images" accept="image/*" multiple>
+    </div>
+    {% if current_user.is_authenticated and (current_user.is_translator or current_user.is_admin) %}
+    <div class="mb-3">
+      <label for="pdf" class="form-label">Arquivo PDF</label>
+      <input class="form-control" type="file" id="pdf" name="pdf" accept="application/pdf">
+    </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ manga.title }} - Manga Hub{% endblock %}
+
+{% block content %}
+  <h1 class="glow">{{ manga.title }}</h1>
+  <p><strong>Autor:</strong> {{ manga.author or 'Desconhecido' }}</p>
+  {% set imgs = manga._imgs %}
+  {% if imgs %}
+  <div class="manga-gallery">
+    {% for fname in imgs %}
+      <img src="{{ url_for('static', filename='uploads/' + fname) }}" class="img-fluid manga-full" alt="{{ manga.title }} image {{ loop.index }}">
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="card card-manga">
+    <div class="card-body">
+      <p class="card-text">{{ manga.description or 'Sem descrição.' }}</p>
+      {% if manga.pdf_filename %}
+      <p><a href="{{ url_for('static', filename='uploads/' + manga.pdf_filename) }}" target="_blank">Ver PDF completo</a></p>
+      {% endif %}
+    </div>
+    <div class="card-footer text-muted small">
+      Postado em {{ manga.posted_at.strftime('%d/%m/%Y %H:%M') }}
+    </div>
+  </div>
+  {% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('toggle_favorite', manga_id=manga.id) }}" class="d-inline">
+      {% if current_user.is_favorite(manga) %}
+        <button type="submit" class="btn btn-outline-warning mt-3">Remover dos Favoritos</button>
+      {% else %}
+        <button type="submit" class="btn btn-warning mt-3">Adicionar aos Favoritos</button>
+      {% endif %}
+    </form>
+  {% endif %}
+  <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar</a>
+  {% if current_user.is_authenticated and current_user.is_admin %}
+  <a href="{{ url_for('edit_manga', manga_id=manga.id) }}" class="btn btn-primary mt-3">Editar Mangá</a>
+  <form method="post" action="{{ url_for('delete_manga', manga_id=manga.id) }}" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este mangá?');">
+    <button type="submit" class="btn btn-danger mt-3">Excluir Mangá</button>
+  </form>
+  {% endif %}
+{% endblock %}

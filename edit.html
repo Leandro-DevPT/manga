@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Mangá - Manga Hub{% endblock %}
+
+{% block content %}
+  <h1 class="glow">Editar Mangá</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <form method="post" class="mt-4">
+    <div class="mb-3">
+      <label for="title" class="form-label">Título</label>
+      <input type="text" class="form-control" id="title" name="title" value="{{ manga.title }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="author" class="form-label">Autor</label>
+      <input type="text" class="form-control" id="author" name="author" value="{{ manga.author }}">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Descrição</label>
+      <textarea class="form-control" id="description" name="description" rows="5">{{ manga.description }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('manga_detail', manga_id=manga.id) }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}
